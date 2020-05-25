@@ -1,0 +1,72 @@
+1.	Load Boston.cvs data set. It records 14 variables for 506 neighborhoods around Boston:
+ data = read.csv("Boston.csv", header=T, sep=";")
+crim: per capita crime rate by town.
+zn: proportion of residential land zoned for lots over 25,000 sq.ft.
+indus: proportion of non-retail business acres per town.
+chas: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+nox: nitrogen oxides concentration (parts per 10 million).
+rm: average number of rooms per dwelling.
+age: proportion of owner-occupied units built prior to 1940.
+dis: weighted mean of distances to five Boston employment centers.
+rad: index of accessibility to radial highways. tax: full-value property-tax rate per \$10,000. ptratio: pupil-teacher ratio by town.
+black: 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+lstat: lower status of the population (percent).
+medv: median value of owner-occupied homes in \$1000s.
+
+2.	Fit a multiple regression model to predict the response variable medv using all other variables. For which variables the corresponding regression coefficients are likely to be significant? (40 points)
+
+> cor(house[c("medv","crim", "zn", "indus", "chas", "nox", "rm", "age", "dis", "rad", "tax", "ptratio","black", "lstat")])
+
+> pairs(~ medv + x + crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + black + lstat, data = house, main = "Boston")
+
+> pairs.panels(house[c("medv","crim", "zn", "indus", "chas", "nox", "rm", "age", "dis", "rad", "tax", "ptratio","black", "lstat")])
+
+> multi = lm(formula = medv ~ .,data = house)
+> summary(multi)
+
+3.	On the basis of your response to the previous question, fit a smaller linear regression model that only uses predictors for which there is evidence of association with medv. (10 points)
+
+> cor(house[c("medv", "crim", "chas", "rm", "dis", "ptratio","black", "lstat")])
+
+> pairs(medv ~ crim + chas + rm + dis +ptratio + black + lstat, data = house, main = "Boston")
+
+> pairs.panels(house[c("medv", "crim", "chas", "rm", "dis", "ptratio","black", "lstat")])
+
+> predictors = lm(medv ~ crim + chas + rm + dis +ptratio + black + lstat, data=house)
+> summary(predictors)
+
+4.	How well the models in 2 and 3 fit the data? (10 points)
+
+ Model 2:	Multiple R-squared:  0.7414,    Adjusted R-squared:  0.734 
+R2 is a measure of the model’s quality. Bigger is better. Mathematically, it is the fraction of the variance of y that is explained by the regression model. The remaining variance is not explained by the model, so it must be due to other factors (i.e., unknown variables or sampling variability). In this case, the model explains 0.741409 (74.14%) of the variance of y and remaining is unexplanined.
+ Model 3 :Multiple R-squared:  0.7097,    Adjusted R-squared:  0.7056 
+R2 is a measure of the model’s quality. Bigger is better. Mathematically, it is the fraction of the variance of y that is explained by the regression model. The remaining variance is not explained by the model, so it must be due to other factors (i.e., unknown variables or sampling variability). In this case, the model explains 0.7097 (740.97%) of the variance of y and remaining is unexplanined.
+
+5.	Try to reduce the set of predictors by making correlation and scatterplot matrices and fit even a smaller model using the predictors of your choice. (30 points)
+
+
+
+rm, lstat,ptratio are the variables associated with medv
+
+> cor(house[c("medv", "rm","ptratio","lstat")])
+
+> pairs(medv ~ rm + ptratio + lstat, data = house, main = "Boston")
+
+> pairs.panels(house[c("medv", "rm","ptratio","lstat")])
+
+> var1<-lm(medv~rm+lstat+ptratio, data = house)
+> summary(var1)
+
+
+6.	Investigate possible interactions between the variables in the last model. Try to find a model with the maximum of R2 value (10 points)
+> ind1=lm(medv~lstat,data=house)
+> summary(ind1)
+
+> ind3=lm(medv~rm,data=house)
+> summary(ind3)
+
+> ind4=lm(medv~ptratio,data=house)
+> summary(ind4)
+
+
+
